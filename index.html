@@ -7,15 +7,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --green: #2d5a27;
-      --green-light: #4a8c42;
-      --cream: #f5f0e8;
-      --warm: #e8dcc8;
-      --brown: #6b4c2a;
+      --green: #1d4a6b;
+      --green-light: #2a6496;
+      --cream: #f4f6f8;
+      --warm: #dde3ea;
+      --brown: #c0141a;
       --text: #1a1a1a;
-      --muted: #7a7a6e;
-      --error: #c0392b;
-      --success: #27ae60;
+      --muted: #6b7a8d;
+      --error: #c0141a;
+      --success: #1d7a3a;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -29,7 +29,7 @@
 
     /* HEADER */
     header {
-      background: var(--green);
+      background: #1d4a6b;
       padding: 28px 24px 24px;
       text-align: center;
       position: relative;
@@ -106,7 +106,7 @@
     .card-title {
       font-family: 'Playfair Display', serif;
       font-size: 1.3rem;
-      color: var(--green);
+      color: #1d4a6b;
       margin-bottom: 6px;
     }
     .card-subtitle {
@@ -174,7 +174,7 @@
     }
     .package-card:hover { border-color: var(--green-light); background: #fff; }
     .package-card.selected {
-      border-color: var(--green);
+      border-color: #1d4a6b;
       background: #fff;
       box-shadow: 0 0 0 4px rgba(45,90,39,0.08);
     }
@@ -190,7 +190,7 @@
     .pkg-price {
       font-family: 'Playfair Display', serif;
       font-size: 1.3rem;
-      color: var(--green);
+      color: #1d4a6b;
       font-weight: 700;
     }
     .pkg-check {
@@ -206,7 +206,7 @@
     }
     .package-card.selected .pkg-check {
       background: var(--green);
-      border-color: var(--green);
+      border-color: #1d4a6b;
       color: #fff;
     }
 
@@ -230,7 +230,7 @@
     .time-slot:hover { border-color: var(--green-light); background: #fff; }
     .time-slot.selected {
       background: var(--green);
-      border-color: var(--green);
+      border-color: #1d4a6b;
       color: #fff;
       font-weight: 500;
     }
@@ -244,7 +244,7 @@
     .postcode-row input { flex: 1; }
     .check-btn {
       padding: 13px 18px;
-      background: var(--green);
+      background: #1d4a6b;
       color: #fff;
       border: none;
       border-radius: 12px;
@@ -255,7 +255,7 @@
       white-space: nowrap;
       transition: background 0.2s;
     }
-    .check-btn:hover { background: var(--green-light); }
+    .check-btn:hover { background: #2a6496; }
 
     .postcode-result {
       margin-top: 10px;
@@ -288,7 +288,7 @@
     .btn-primary {
       width: 100%;
       padding: 16px;
-      background: var(--green);
+      background: #c0141a;
       color: #fff;
       border: none;
       border-radius: 14px;
@@ -299,7 +299,7 @@
       transition: all 0.2s;
       margin-top: 8px;
     }
-    .btn-primary:hover { background: var(--green-light); transform: translateY(-1px); }
+    .btn-primary:hover { background: #a01015; transform: translateY(-1px); }
     .btn-primary:disabled { background: var(--muted); cursor: not-allowed; transform: none; }
 
     .btn-back {
@@ -315,7 +315,7 @@
       margin-top: 8px;
       transition: all 0.2s;
     }
-    .btn-back:hover { border-color: var(--green); color: var(--green); }
+    .btn-back:hover { border-color: #1d4a6b; color: #1d4a6b; }
 
     /* SUCCESS STATE */
     .success-screen {
@@ -336,7 +336,7 @@
     .success-screen h2 {
       font-family: 'Playfair Display', serif;
       font-size: 1.8rem;
-      color: var(--green);
+      color: #1d4a6b;
       margin-bottom: 10px;
     }
     .success-screen p {
@@ -496,7 +496,7 @@
 
 </main>
 
-<footer>The Dog Run · Mobile Dog Gym · Bognor Regis</footer>
+<footer>DogRun™ · A Mobile Gym For Dogs · Bognor Regis</footer>
 
 <!-- Supabase CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -506,7 +506,7 @@
 const CONFIG = {
   supabaseUrl: 'YOUR_SUPABASE_URL',
   supabaseKey: 'YOUR_SUPABASE_ANON_KEY',
-  businessName: 'The Dog Run',
+  businessName: 'DogRun',
   centerPostcode: 'PO211AA',
   maxDistanceMiles: 15,
   timeSlots: ['9:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'],
