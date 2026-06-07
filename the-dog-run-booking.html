@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Dog Run — Book a Session</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #2d5a27;
+      --green-light: #4a8c42;
+      --cream: #f5f0e8;
+      --warm: #e8dcc8;
+      --brown: #6b4c2a;
+      --text: #1a1a1a;
+      --muted: #7a7a6e;
+      --error: #c0392b;
+      --success: #27ae60;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--green);
+      padding: 28px 24px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      bottom: -30px; left: 50%;
+      transform: translateX(-50%);
+      width: 120%;
+      height: 60px;
+      background: var(--cream);
+      border-radius: 50%;
+    }
+    .logo-paw {
+      font-size: 36px;
+      display: block;
+      margin-bottom: 6px;
+    }
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      color: #fff;
+      font-size: 2rem;
+      letter-spacing: -0.5px;
+    }
+    header p {
+      color: rgba(255,255,255,0.75);
+      font-size: 0.85rem;
+      margin-top: 4px;
+      font-weight: 300;
+    }
+
+    /* MAIN */
+    main {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 40px 20px 60px;
+    }
+
+    /* STEP INDICATOR */
+    .steps {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+    .step-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--warm);
+      transition: all 0.3s;
+    }
+    .step-dot.active { background: var(--green); width: 24px; border-radius: 4px; }
+    .step-dot.done { background: var(--green-light); }
+
+    /* CARDS / SECTIONS */
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 28px 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      display: none;
+      animation: fadeUp 0.35s ease;
+    }
+    .card.active { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--green);
+      margin-bottom: 6px;
+    }
+    .card-subtitle {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    /* FORM ELEMENTS */
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      margin-top: 16px;
+    }
+    label:first-of-type { margin-top: 0; }
+
+    input, select {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1.5px solid var(--warm);
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      background: var(--cream);
+      color: var(--text);
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--green-light);
+      background: #fff;
+    }
+    input.error, select.error { border-color: var(--error); }
+
+    .error-msg {
+      font-size: 0.78rem;
+      color: var(--error);
+      margin-top: 5px;
+      display: none;
+    }
+    .error-msg.visible { display: block; }
+
+    /* PACKAGE CARDS */
+    .packages-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .package-card {
+      border: 2px solid var(--warm);
+      border-radius: 14px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--cream);
+    }
+    .package-card:hover { border-color: var(--green-light); background: #fff; }
+    .package-card.selected {
+      border-color: var(--green);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(45,90,39,0.08);
+    }
+    .pkg-name {
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+    .pkg-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .pkg-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--green);
+      font-weight: 700;
+    }
+    .pkg-check {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--warm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      color: transparent;
+      transition: all 0.2s;
+      margin-left: 12px;
+      flex-shrink: 0;
+    }
+    .package-card.selected .pkg-check {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+
+    /* TIME SLOTS */
+    .time-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .time-slot {
+      padding: 10px 6px;
+      border: 1.5px solid var(--warm);
+      border-radius: 10px;
+      text-align: center;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--cream);
+    }
+    .time-slot:hover { border-color: var(--green-light); background: #fff; }
+    .time-slot.selected {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+      font-weight: 500;
+    }
+
+    /* POSTCODE CHECK */
+    .postcode-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+    .postcode-row input { flex: 1; }
+    .check-btn {
+      padding: 13px 18px;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .check-btn:hover { background: var(--green-light); }
+
+    .postcode-result {
+      margin-top: 10px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      display: none;
+    }
+    .postcode-result.ok { background: #e8f5e9; color: var(--success); display: block; }
+    .postcode-result.fail { background: #fdecea; color: var(--error); display: block; }
+
+    /* SUMMARY BOX */
+    .summary-box {
+      background: var(--cream);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--warm);
+    }
+    .summary-row:last-child { border-bottom: none; font-weight: 600; font-size: 1rem; }
+    .summary-row span:first-child { color: var(--muted); }
+
+    /* BUTTONS */
+    .btn-primary {
+      width: 100%;
+      padding: 16px;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+    }
+    .btn-primary:hover { background: var(--green-light); transform: translateY(-1px); }
+    .btn-primary:disabled { background: var(--muted); cursor: not-allowed; transform: none; }
+
+    .btn-back {
+      width: 100%;
+      padding: 13px;
+      background: transparent;
+      color: var(--muted);
+      border: 1.5px solid var(--warm);
+      border-radius: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: all 0.2s;
+    }
+    .btn-back:hover { border-color: var(--green); color: var(--green); }
+
+    /* SUCCESS STATE */
+    .success-screen {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .success-icon {
+      font-size: 64px;
+      display: block;
+      margin-bottom: 20px;
+      animation: bounce 0.6s ease;
+    }
+    @keyframes bounce {
+      0% { transform: scale(0); }
+      60% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .success-screen h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+    .success-screen p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* LOADING */
+    .spinner {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* CONFIG NOTICE */
+    .config-notice {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 0.8rem;
+      color: #7d5c00;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .config-notice.visible { display: block; }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="logo-paw">🐾</span>
+  <h1>The Dog Run</h1>
+  <p>Mobile Dog Gym · Bognor Regis & surrounding areas</p>
+</header>
+
+<main>
+
+  <div class="config-notice" id="configNotice">
+    ⚠️ Demo mode — Supabase not yet connected. Bookings won't be saved until you add your API keys.
+  </div>
+
+  <!-- STEP INDICATORS -->
+  <div class="steps">
+    <div class="step-dot active" id="dot1"></div>
+    <div class="step-dot" id="dot2"></div>
+    <div class="step-dot" id="dot3"></div>
+    <div class="step-dot" id="dot4"></div>
+  </div>
+
+  <!-- STEP 1: LOCATION CHECK + PACKAGE -->
+  <div class="card active" id="step1">
+    <div class="card-title">Where are you?</div>
+    <div class="card-subtitle">We cover up to 15 miles from Bognor Regis</div>
+
+    <label>Your Postcode</label>
+    <div class="postcode-row">
+      <input type="text" id="postcode" placeholder="e.g. PO22 7AB" maxlength="8" />
+      <button class="check-btn" onclick="checkPostcode()">Check</button>
+    </div>
+    <div class="postcode-result" id="postcodeResult"></div>
+
+    <div id="packageSection" style="display:none; margin-top:24px;">
+      <div class="card-title">Choose a Package</div>
+      <div class="card-subtitle">Select what works best for you</div>
+      <div class="packages-grid" id="packagesGrid">
+        <div style="text-align:center; color:var(--muted); padding:20px; font-size:0.85rem;">Loading packages...</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="step1Next" onclick="goToStep2()" style="display:none; margin-top:20px;">
+      Choose Date & Time →
+    </button>
+  </div>
+
+  <!-- STEP 2: DATE + TIME -->
+  <div class="card" id="step2">
+    <div class="card-title">Pick a Date & Time</div>
+    <div class="card-subtitle">We're available 7 days a week, 9am–7pm</div>
+
+    <label>Date</label>
+    <input type="date" id="bookingDate" onchange="updateTimeSlots()" />
+
+    <label style="margin-top:20px;">Time Slot</label>
+    <div class="time-grid" id="timeGrid"></div>
+    <div class="error-msg" id="timeError">Please select a time slot</div>
+
+    <button class="btn-primary" onclick="goToStep3()" style="margin-top:20px;">Your Details →</button>
+    <button class="btn-back" onclick="goToStep(1)">← Back</button>
+  </div>
+
+  <!-- STEP 3: CUSTOMER DETAILS -->
+  <div class="card" id="step3">
+    <div class="card-title">Your Details</div>
+    <div class="card-subtitle">So we know who's coming!</div>
+
+    <label>Your Name</label>
+    <input type="text" id="custName" placeholder="Jane Smith" />
+    <div class="error-msg" id="nameError">Please enter your name</div>
+
+    <label>Email Address</label>
+    <input type="email" id="custEmail" placeholder="jane@example.com" />
+    <div class="error-msg" id="emailError">Please enter a valid email</div>
+
+    <label>Phone Number</label>
+    <input type="tel" id="custPhone" placeholder="07700 900000" />
+    <div class="error-msg" id="phoneError">Please enter your phone number</div>
+
+    <label>Dog's Name</label>
+    <input type="text" id="dogName" placeholder="Buddy" />
+
+    <button class="btn-primary" onclick="goToStep4()" style="margin-top:20px;">Review & Pay →</button>
+    <button class="btn-back" onclick="goToStep(2)">← Back</button>
+  </div>
+
+  <!-- STEP 4: SUMMARY + PAYMENT -->
+  <div class="card" id="step4">
+    <div class="card-title">Booking Summary</div>
+    <div class="card-subtitle">Check everything looks right</div>
+
+    <div class="summary-box" id="summaryBox"></div>
+
+    <div style="background:#e8f5e9; border-radius:12px; padding:14px 16px; font-size:0.82rem; color:#2d6a2d; margin-bottom:16px;">
+      🔒 Payment is processed securely via Square. You'll be redirected to complete payment after confirming.
+    </div>
+
+    <button class="btn-primary" id="confirmBtn" onclick="confirmBooking()">
+      Confirm & Pay
+    </button>
+    <button class="btn-back" onclick="goToStep(3)">← Back</button>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="card" id="stepSuccess">
+    <div class="success-screen">
+      <span class="success-icon">🎉</span>
+      <h2>You're booked in!</h2>
+      <p>Thanks for booking with The Dog Run.<br>We'll be in touch shortly to confirm your session.<br><br>
+      Get ready for an amazing workout, pup! 🐕</p>
+      <button class="btn-primary" onclick="resetForm()" style="margin-top:24px;">Book Another Session</button>
+    </div>
+  </div>
+
+</main>
+
+<footer>The Dog Run · Mobile Dog Gym · Bognor Regis</footer>
+
+<!-- Supabase CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+// ===== CONFIGURATION — EDIT THESE =====
+const CONFIG = {
+  supabaseUrl: 'YOUR_SUPABASE_URL',
+  supabaseKey: 'YOUR_SUPABASE_ANON_KEY',
+  businessName: 'The Dog Run',
+  centerPostcode: 'PO211AA',
+  maxDistanceMiles: 15,
+  timeSlots: ['9:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'],
+};
+
+// ===== STATE =====
+let sbClient = null;
+let currentStep = 1;
+let selectedPackage = null;
+let selectedTime = null;
+let packages = [];
+
+// ===== INIT =====
+window.addEventListener('DOMContentLoaded', () => {
+  // Check config
+  if (CONFIG.supabaseUrl === 'YOUR_SUPABASE_URL') {
+    document.getElementById('configNotice').classList.add('visible');
+    // Load demo packages
+    packages = [
+      { id: 1, name: 'Single Session', description: '1 hour dog gym session', price: 25, sessions: 1 },
+      { id: 2, name: 'Bundle of 5', description: '5 sessions — save £20', price: 105, sessions: 5 },
+    ];
+  } else {
+    sbClient = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey);
+  }
+
+  // Set min date to today
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('bookingDate').min = today;
+  document.getElementById('bookingDate').value = today;
+
+  buildTimeGrid();
+});
+
+// ===== POSTCODE CHECK =====
+async function checkPostcode() {
+  const pc = document.getElementById('postcode').value.trim().toUpperCase().replace(/\s/g,'');
+  const result = document.getElementById('postcodeResult');
+  const btn = document.querySelector('.check-btn');
+
+  if (!pc) { result.className = 'postcode-result fail'; result.textContent = 'Please enter a postcode.'; return; }
+
+  btn.textContent = 'Checking...';
+  btn.disabled = true;
+
+  try {
+    // Use postcodes.io API — free, no key needed
+    const [r1, r2] = await Promise.all([
+      fetch(`https://api.postcodes.io/postcodes/${pc}`).then(r=>r.json()),
+      fetch(`https://api.postcodes.io/postcodes/${CONFIG.centerPostcode.replace(/\s/,'')}`).then(r=>r.json())
+    ]);
+
+    if (r1.status !== 200) throw new Error('Invalid postcode');
+
+    const dist = getDistanceMiles(r1.result.latitude, r1.result.longitude, r2.result.latitude, r2.result.longitude);
+
+    if (dist <= CONFIG.maxDistanceMiles) {
+      result.className = 'postcode-result ok';
+      result.textContent = `✅ Great news! You're about ${Math.round(dist)} miles away — we cover your area!`;
+      showPackages();
+    } else {
+      result.className = 'postcode-result fail';
+      result.textContent = `Sorry, you're about ${Math.round(dist)} miles away. We currently only cover within ${CONFIG.maxDistanceMiles} miles of Bognor Regis.`;
+      document.getElementById('packageSection').style.display = 'none';
+      document.getElementById('step1Next').style.display = 'none';
+    }
+  } catch(e) {
+    result.className = 'postcode-result fail';
+    result.textContent = 'Could not check postcode. Please try again.';
+  }
+
+  btn.textContent = 'Check';
+  btn.disabled = false;
+}
+
+function getDistanceMiles(lat1, lon1, lat2, lon2) {
+  const R = 3958.8;
+  const dLat = (lat2-lat1)*Math.PI/180;
+  const dLon = (lon2-lon1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+// ===== PACKAGES =====
+async function showPackages() {
+  document.getElementById('packageSection').style.display = 'block';
+  const grid = document.getElementById('packagesGrid');
+
+  if (sbClient) {
+    const { data, error } = await sbClient.from('packages').select('*').eq('active', true);
+    if (!error && data) packages = data;
+  }
+
+  grid.innerHTML = packages.map(pkg => `
+    <div class="package-card" id="pkg-${pkg.id}" onclick="selectPackage(${pkg.id})">
+      <div>
+        <div class="pkg-name">${pkg.name}</div>
+        <div class="pkg-desc">${pkg.description}</div>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <div class="pkg-price">£${pkg.price}</div>
+        <div class="pkg-check" id="check-${pkg.id}">✓</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectPackage(id) {
+  packages.forEach(p => {
+    document.getElementById(`pkg-${p.id}`)?.classList.remove('selected');
+  });
+  document.getElementById(`pkg-${id}`).classList.add('selected');
+  selectedPackage = packages.find(p => p.id === id);
+  document.getElementById('step1Next').style.display = 'block';
+}
+
+// ===== TIME SLOTS =====
+function buildTimeGrid() {
+  const grid = document.getElementById('timeGrid');
+  grid.innerHTML = CONFIG.timeSlots.map(t => `
+    <div class="time-slot" id="slot-${t.replace(':','')}" onclick="selectTime('${t}')">${t}</div>
+  `).join('');
+}
+
+function updateTimeSlots() {
+  // Reset selection when date changes
+  selectedTime = null;
+  document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+}
+
+function selectTime(t) {
+  document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+  document.getElementById(`slot-${t.replace(':','')}`).classList.add('selected');
+  selectedTime = t;
+  document.getElementById('timeError').classList.remove('visible');
+}
+
+// ===== NAVIGATION =====
+function goToStep(n) {
+  document.getElementById(`step${currentStep === 5 ? 'Success' : currentStep}`).classList.remove('active');
+  currentStep = n;
+  document.getElementById(`step${n}`).classList.add('active');
+  updateDots();
+  window.scrollTo(0, 0);
+}
+
+function goToStep2() {
+  if (!selectedPackage) return;
+  goToStep(2);
+}
+
+function goToStep3() {
+  const date = document.getElementById('bookingDate').value;
+  if (!date) return;
+  if (!selectedTime) { document.getElementById('timeError').classList.add('visible'); return; }
+  goToStep(3);
+}
+
+function goToStep4() {
+  const name = document.getElementById('custName').value.trim();
+  const email = document.getElementById('custEmail').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  let valid = true;
+
+  if (!name) { document.getElementById('nameError').classList.add('visible'); valid = false; }
+  else document.getElementById('nameError').classList.remove('visible');
+
+  if (!email || !email.includes('@')) { document.getElementById('emailError').classList.add('visible'); valid = false; }
+  else document.getElementById('emailError').classList.remove('visible');
+
+  if (!phone) { document.getElementById('phoneError').classList.add('visible'); valid = false; }
+  else document.getElementById('phoneError').classList.remove('visible');
+
+  if (!valid) return;
+
+  // Build summary
+  const date = new Date(document.getElementById('bookingDate').value);
+  const dateStr = date.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  const dog = document.getElementById('dogName').value.trim();
+
+  document.getElementById('summaryBox').innerHTML = `
+    <div class="summary-row"><span>Package</span><span>${selectedPackage.name}</span></div>
+    <div class="summary-row"><span>Date</span><span>${dateStr}</span></div>
+    <div class="summary-row"><span>Time</span><span>${selectedTime}</span></div>
+    <div class="summary-row"><span>Name</span><span>${name}</span></div>
+    ${dog ? `<div class="summary-row"><span>Dog's Name</span><span>${dog}</span></div>` : ''}
+    <div class="summary-row"><span>Postcode</span><span>${document.getElementById('postcode').value.toUpperCase()}</span></div>
+    <div class="summary-row"><span>Total</span><span>£${selectedPackage.price}</span></div>
+  `;
+
+  goToStep(4);
+}
+
+// ===== CONFIRM BOOKING =====
+async function confirmBooking() {
+  const btn = document.getElementById('confirmBtn');
+  btn.innerHTML = '<span class="spinner"></span>Saving booking...';
+  btn.disabled = true;
+
+  const booking = {
+    customer_name: document.getElementById('custName').value.trim(),
+    customer_email: document.getElementById('custEmail').value.trim(),
+    customer_phone: document.getElementById('custPhone').value.trim(),
+    package: selectedPackage.name,
+    booking_date: document.getElementById('bookingDate').value,
+    booking_time: selectedTime,
+    status: 'pending_payment',
+  };
+
+  if (sbClient) {
+    const { error } = await sbClient.from('bookings').insert([booking]);
+    if (error) {
+      alert('Something went wrong saving your booking. Please try again.');
+      btn.innerHTML = 'Confirm & Pay';
+      btn.disabled = false;
+      return;
+    }
+  }
+
+  // 👇 SQUARE PAYMENT LINK GOES HERE
+  // Once you set up a Square payment link, replace the line below:
+  // window.location.href = 'YOUR_SQUARE_PAYMENT_LINK';
+  // For now, we show the success screen directly.
+
+  showSuccess();
+}
+
+function showSuccess() {
+  document.getElementById('step4').classList.remove('active');
+  document.getElementById('stepSuccess').classList.add('active');
+  currentStep = 5;
+  updateDots();
+  window.scrollTo(0,0);
+}
+
+function updateDots() {
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById(`dot${i}`);
+    if (!dot) continue;
+    dot.className = 'step-dot';
+    if (i < currentStep) dot.classList.add('done');
+    else if (i === currentStep) dot.classList.add('active');
+  }
+}
+
+function resetForm() {
+  selectedPackage = null;
+  selectedTime = null;
+  document.getElementById('postcode').value = '';
+  document.getElementById('postcodeResult').className = 'postcode-result';
+  document.getElementById('packageSection').style.display = 'none';
+  document.getElementById('step1Next').style.display = 'none';
+  document.getElementById('custName').value = '';
+  document.getElementById('custEmail').value = '';
+  document.getElementById('custPhone').value = '';
+  document.getElementById('dogName').value = '';
+  document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+  document.getElementById('stepSuccess').classList.remove('active');
+  currentStep = 1;
+  document.getElementById('step1').classList.add('active');
+  updateDots();
+  window.scrollTo(0,0);
+}
+
+// Allow enter key on postcode field
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.activeElement.id === 'postcode') checkPostcode();
+});
+</script>
+
+</body>
+</html>
