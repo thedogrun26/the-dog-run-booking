@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gallery — DogRun</title>
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#3766a0" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;1,800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy: #3766a0;
+      --navy-dark: #2a5488;
+      --red: #c60100;
+      --cream: #f4f6f8;
+      --warm: #dde3ea;
+      --text: #1a1a1a;
+      --muted: #6b7a8d;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Barlow', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+
+    header {
+      background: linear-gradient(160deg, #2a5488 0%, #3766a0 100%);
+      padding: 16px 20px;
+      border-bottom: 4px solid var(--red);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-style: italic;
+      font-weight: 800;
+      color: white;
+      font-size: 1.5rem;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+    }
+    .menu-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.6rem;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    .menu-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200; opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .menu-overlay.open { opacity: 1; pointer-events: auto; }
+    .menu-drawer {
+      position: fixed; top: 0; right: -280px;
+      width: 280px; height: 100vh;
+      background: #142a3e; z-index: 201;
+      transition: right 0.3s; padding: 24px 0;
+    }
+    .menu-drawer.open { right: 0; }
+    .menu-close {
+      background: none; border: none;
+      color: rgba(255,255,255,0.6);
+      font-size: 1.4rem; cursor: pointer;
+      position: absolute; top: 16px; right: 16px;
+    }
+    .menu-items { margin-top: 40px; list-style: none; padding: 0; }
+    .menu-items a {
+      display: block; padding: 16px 28px;
+      color: white; text-decoration: none;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-style: italic; font-weight: 700;
+      font-size: 1.2rem; text-transform: uppercase;
+      letter-spacing: 1px;
+      border-left: 4px solid transparent;
+      transition: all 0.2s;
+    }
+    .menu-items a:hover, .menu-items a.active {
+      border-left-color: var(--red);
+      background: rgba(255,255,255,0.05);
+    }
+
+    main { max-width: 900px; margin: 0 auto; padding: 28px 16px 60px; }
+    .page-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-style: italic;
+      color: var(--navy);
+      font-size: 2rem;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .page-sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-bottom: 28px;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 10px;
+    }
+    .gallery-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      background: var(--warm);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: transform 0.2s;
+    }
+    .gallery-item:hover { transform: scale(1.02); }
+    .gallery-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .video-badge {
+      position: absolute;
+      top: 8px; right: 8px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    /* LIGHTBOX */
+    .lightbox {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img, .lightbox iframe {
+      max-width: 95vw;
+      max-height: 85vh;
+      border-radius: 8px;
+    }
+    .lightbox iframe {
+      width: 90vw;
+      height: 60vh;
+      border: none;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 16px; right: 20px;
+      background: none; border: none;
+      color: white; font-size: 2rem;
+      cursor: pointer;
+    }
+
+    .loading-state {
+      text-align: center;
+      color: var(--muted);
+      padding: 60px 20px;
+      font-size: 0.9rem;
+    }
+
+    footer {
+      background: #142a3e;
+      text-align: center;
+      padding: 20px;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="header-title">DogRun™</a>
+  <button class="menu-btn" onclick="toggleMenu()">☰</button>
+</header>
+
+<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+<nav class="menu-drawer" id="menuDrawer">
+  <button class="menu-close" onclick="toggleMenu()">✕</button>
+  <ul class="menu-items">
+    <li><a href="/">🐾 Book a Session</a></li>
+    <li><a href="/gallery.html" class="active">🖼️ Gallery</a></li>
+    <li><a href="/terms.html">📄 Terms &amp; Conditions</a></li>
+    <li><a href="/privacy.html">🔒 Privacy Policy</a></li>
+  </ul>
+</nav>
+
+<main>
+  <h1 class="page-title">Gallery</h1>
+  <p class="page-sub">Happy dogs at work 🐕💪</p>
+  <div class="gallery-grid" id="galleryGrid">
+    <div class="loading-state" style="grid-column:1/-1;">Loading photos...</div>
+  </div>
+</main>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox(event)">✕</button>
+  <div id="lightboxContent"></div>
+</div>
+
+<footer>DogRun™ · A Mobile Gym For Dogs · West Sussex</footer>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxfVXLiWYQTeSyzrCHPMxDqqkfJOi-M3D0uoBW1el8u7xjpLOtRz8DOJtps-RJDlyKgeA/exec';
+
+function toggleMenu() {
+  document.getElementById('menuOverlay').classList.toggle('open');
+  document.getElementById('menuDrawer').classList.toggle('open');
+}
+
+async function loadGallery() {
+  const grid = document.getElementById('galleryGrid');
+  try {
+    const res = await fetch(APPS_SCRIPT_URL + '?type=gallery&v=' + Date.now());
+    const items = await res.json();
+    if (!items.length) {
+      grid.innerHTML = '<div class="loading-state" style="grid-column:1/-1;">📷 Photos coming soon!</div>';
+      return;
+    }
+    grid.innerHTML = items.map(item => {
+      const isVideo = item.mimeType && item.mimeType.startsWith('video');
+      return `
+        <div class="gallery-item" onclick="openLightbox('${item.id}', ${isVideo})">
+          <img src="https://lh3.googleusercontent.com/d/${item.id}=w400" alt="${item.name}" loading="lazy" onerror="this.src='https://drive.google.com/thumbnail?id=${item.id}&sz=w400'" />
+          ${isVideo ? '<span class="video-badge">▶ VIDEO</span>' : ''}
+        </div>
+      `;
+    }).join('');
+  } catch(e) {
+    grid.innerHTML = '<div class="loading-state" style="grid-column:1/-1;">Could not load gallery. Please try again later.</div>';
+  }
+}
+
+function openLightbox(id, isVideo) {
+  const content = document.getElementById('lightboxContent');
+  if (isVideo) {
+    content.innerHTML = `<iframe src="https://drive.google.com/file/d/${id}/preview" allow="autoplay"></iframe>`;
+  } else {
+    content.innerHTML = `<img src="https://lh3.googleusercontent.com/d/${id}=w1600" onerror="this.src='https://drive.google.com/thumbnail?id=${id}&sz=w1600'" />`;
+  }
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function closeLightbox(e) {
+  if (e.target.id === 'lightbox' || e.target.classList.contains('lightbox-close')) {
+    document.getElementById('lightbox').classList.remove('open');
+    document.getElementById('lightboxContent').innerHTML = '';
+  }
+}
+
+loadGallery();
+</script>
+</body>
+</html>
