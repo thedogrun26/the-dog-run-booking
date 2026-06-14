@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cancel or Reschedule — DogRun</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;1,800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy: #3766a0;
+      --navy-dark: #2a5488;
+      --red: #c60100;
+      --cream: #f4f6f8;
+      --warm: #dde3ea;
+      --text: #1a1a1a;
+      --muted: #6b7a8d;
+      --success: #1d7a3a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Barlow', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+
+    header {
+      background: linear-gradient(160deg, #2a5488 0%, #3766a0 100%);
+      padding: 16px 20px;
+      border-bottom: 4px solid var(--red);
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-style: italic;
+      font-weight: 800;
+      color: white;
+      font-size: 1.5rem;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+    }
+
+    main {
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 28px 24px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      border-top: 4px solid var(--navy);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-style: italic;
+      color: var(--navy);
+      font-size: 1.6rem;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-bottom: 20px;
+    }
+
+    .booking-info {
+      background: var(--cream);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .booking-info strong {
+      color: var(--navy);
+    }
+
+    .section-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-style: italic;
+      color: var(--navy);
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      margin: 20px 0 12px;
+      border-bottom: 2px solid var(--warm);
+      padding-bottom: 6px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 14px 0 6px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--warm);
+      border-radius: 10px;
+      font-family: 'Barlow', sans-serif;
+      font-size: 0.95rem;
+      background: #fff;
+      color: var(--text);
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--navy);
+      background: #fff;
+    }
+
+    .time-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .time-slot {
+      padding: 10px 6px;
+      border: 1.5px solid var(--warm);
+      border-radius: 8px;
+      text-align: center;
+      font-size: 0.85rem;
+      cursor: pointer;
+      background: white;
+      transition: all 0.2s;
+    }
+
+    .time-slot:hover:not(.disabled) {
+      border-color: var(--navy);
+      background: var(--cream);
+    }
+
+    .time-slot.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: var(--warm);
+    }
+
+    .time-slot.selected {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: white;
+      font-weight: 500;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      flex: 1;
+      min-width: 140px;
+      padding: 14px 16px;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Barlow', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-cancel {
+      background: var(--red);
+      color: white;
+    }
+
+    .btn-cancel:hover {
+      background: #a01015;
+      transform: translateY(-1px);
+    }
+
+    .btn-cancel:disabled {
+      background: var(--muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-back {
+      background: transparent;
+      color: var(--navy);
+      border: 1.5px solid var(--navy);
+    }
+
+    .btn-back:hover {
+      background: var(--cream);
+    }
+
+    .message {
+      padding: 12px 14px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      display: none;
+    }
+
+    .message.visible {
+      display: block;
+    }
+
+    .message.info {
+      background: #e3f2fd;
+      color: #1565c0;
+      border-left: 4px solid #1565c0;
+    }
+
+    .message.warning {
+      background: #fff3cd;
+      color: #7d5c00;
+      border-left: 4px solid #ffc107;
+    }
+
+    .message.success {
+      background: #e8f5e9;
+      color: var(--success);
+      border-left: 4px solid var(--success);
+    }
+
+    .message.error {
+      background: #fdecea;
+      color: var(--red);
+      border-left: 4px solid var(--red);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--warm);
+      border-top-color: var(--navy);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="header-title">DogRun™</a>
+</header>
+
+<main>
+  <div id="loadingState" class="loading" style="display:none;">
+    <span class="spinner"></span>Loading your booking...
+  </div>
+
+  <div id="mainContent" style="display:none;">
+    <div class="card">
+      <h1>🔄 Cancel or Reschedule</h1>
+      <p class="subtitle">Manage your booking below</p>
+
+      <div id="bookingInfo" class="booking-info"></div>
+
+      <div id="messageBox" class="message"></div>
+
+      <div id="cancelSection">
+        <div class="section-title">❌ Cancel This Booking</div>
+        <p style="font-size:0.9rem; color:var(--muted); margin-bottom:14px;" id="cancelNote"></p>
+        <button class="btn-cancel" onclick="handleCancel()" id="cancelBtn">Confirm Cancellation</button>
+      </div>
+
+      <div id="rescheduleSection" style="margin-top:28px;">
+        <div class="section-title">📅 Reschedule to a New Date & Time</div>
+        <p style="font-size:0.9rem; color:var(--muted); margin-bottom:14px;" id="rescheduleNote"></p>
+
+        <label>New Date</label>
+        <input type="date" id="newDate" onchange="updateNewTimeSlots()">
+
+        <label style="margin-top:16px;">New Time</label>
+        <div class="time-grid" id="newTimeGrid"></div>
+
+        <div class="button-group" style="margin-top:20px;">
+          <button class="btn-cancel" onclick="handleReschedule()" id="rescheduleBtn" style="flex:1;">Confirm Reschedule</button>
+          <button class="btn-back" onclick="hideReschedule()">Cancel</button>
+        </div>
+      </div>
+
+      <div style="margin-top:28px; text-align:center;">
+        <button class="btn-back" onclick="goHome()" style="width:100%;">← Back to DogRun</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="successState" style="display:none;">
+    <div class="card" id="successContent"></div>
+  </div>
+
+  <div id="errorState" class="card" style="display:none;">
+    <h1>⚠️ Invalid Link</h1>
+    <p style="color:var(--muted); margin:12px 0;">This cancellation link is invalid or has expired. If you need help, please contact us at <strong>thedo6run@gmail.com</strong>.</p>
+    <button class="btn-back" onclick="goHome()" style="width:100%; margin-top:16px;">← Back to DogRun</button>
+  </div>
+</main>
+
+<footer>DogRun™ · A Mobile Gym For Dogs · West Sussex</footer>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxfVXLiWYQTeSyzrCHPMxDqqkfJOi-M3D0uoBW1el8u7xjpLOtRz8DOJtps-RJDlyKgeA/exec';
+const TIME_SLOTS = ['9:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'];
+
+let booking = null;
+let selectedNewTime = null;
+let bookedSlots = {};
+
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+  if (!token) {
+    showError();
+    return;
+  }
+  loadBooking(token);
+});
+
+async function loadBooking(token) {
+  document.getElementById('loadingState').style.display = 'block';
+  try {
+    const res = await fetch(APPS_SCRIPT_URL + '?type=getbooking&token=' + encodeURIComponent(token) + '&v=' + Date.now());
+    const data = await res.json();
+    if (data.error) {
+      showError();
+      return;
+    }
+    booking = data;
+    booking.token = token;
+    renderBooking();
+    await loadBookedSlots();
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+  } catch(e) {
+    showError();
+  }
+}
+
+function renderBooking() {
+  const dateObj = new Date(booking.booking_date + 'T00:00:00Z');
+  const niceDate = dateObj.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  const html = `
+    <strong>Booking Ref:</strong> ${booking.ref}<br>
+    <strong>Dog:</strong> ${booking.dog_name}<br>
+    <strong>Date:</strong> ${niceDate}<br>
+    <strong>Time:</strong> ${booking.booking_time}<br>
+    <strong>Package:</strong> ${booking.package}
+  `;
+  document.getElementById('bookingInfo').innerHTML = html;
+
+  const nowMs = new Date().getTime();
+  const bookingMs = new Date(booking.booking_date + 'T00:00:00Z').getTime();
+  const hoursUntil = (bookingMs - nowMs) / (1000 * 60 * 60);
+  const refundable = hoursUntil > 24;
+
+  if (refundable) {
+    document.getElementById('cancelNote').innerHTML = '✅ Your £10 deposit <strong>can be refunded</strong> if you cancel now. We\'ll process the refund within 2 days.';
+  } else {
+    document.getElementById('cancelNote').innerHTML = '⚠️ Your £10 deposit can <strong>ONLY be refunded if cancelled MORE THAN 24 hours before your booked slot</strong>. Since your session is within 24 hours, the deposit is <strong>non-refundable</strong> per the Terms & Conditions.';
+  }
+
+  if (booking.reschedule_count >= 3) {
+    document.getElementById('rescheduleSection').innerHTML = '<p style="color:var(--red);">❌ You\'ve used all 3 reschedules for this booking. If you need further changes, please contact us at thedo6run@gmail.com.</p>';
+  } else {
+    const remaining = 3 - booking.reschedule_count;
+    document.getElementById('rescheduleNote').textContent = `You have ${remaining} reschedule${remaining === 1 ? '' : 's'} remaining.`;
+  }
+
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('newDate').min = today;
+  document.getElementById('newDate').value = today;
+}
+
+async function loadBookedSlots() {
+  try {
+    const res = await fetch(APPS_SCRIPT_URL + '?type=bookedslots&v=' + Date.now());
+    const slots = await res.json();
+    bookedSlots = (slots && typeof slots === 'object') ? slots : {};
+  } catch(e) {
+    console.log('Could not load booked slots');
+  }
+}
+
+function updateNewTimeSlots() {
+  const date = document.getElementById('newDate').value;
+  const grid = document.getElementById('newTimeGrid');
+  const takenTimes = bookedSlots[date] || [];
+  selectedNewTime = null;
+  grid.innerHTML = TIME_SLOTS.map(t => {
+    const disabled = takenTimes.includes(t);
+    return `
+      <div class="time-slot${disabled ? ' disabled' : ''}" ${!disabled ? `onclick="selectNewTime('${t}')"` : ''}>
+        ${t}${disabled ? '<br><small>✓</small>' : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function selectNewTime(t) {
+  document.querySelectorAll('#newTimeGrid .time-slot').forEach(s => s.classList.remove('selected'));
+  event.target.closest('.time-slot').classList.add('selected');
+  selectedNewTime = t;
+}
+
+async function handleCancel() {
+  const btn = document.getElementById('cancelBtn');
+  btn.disabled = true;
+  btn.textContent = 'Cancelling...';
+  try {
+    const res = await fetch(APPS_SCRIPT_URL + '?type=cancel&token=' + encodeURIComponent(booking.token) + '&v=' + Date.now());
+    const result = await res.json();
+    if (result.success) {
+      showCancelSuccess(result.refundable);
+    } else {
+      showMessage('error', 'Could not cancel booking. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Confirm Cancellation';
+    }
+  } catch(e) {
+    showMessage('error', 'An error occurred. Please try again.');
+    btn.disabled = false;
+    btn.textContent = 'Confirm Cancellation';
+  }
+}
+
+function showCancelSuccess(refundable) {
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('successState').style.display = 'block';
+  const content = document.getElementById('successContent');
+  if (refundable) {
+    content.innerHTML = `<h1>✅ Booking Cancelled</h1>
+       <p style="font-size:0.9rem; color:var(--muted); margin:16px 0;">Your booking <strong>${booking.ref}</strong> has been cancelled.</p>
+       <div style="background:#e8f5e9; border-radius:10px; padding:14px; margin:16px 0; border-left:4px solid var(--success);">
+         <p style="font-size:0.9rem; color:var(--success); margin:0;"><strong>💰 Refund Processing</strong></p>
+         <p style="font-size:0.85rem; color:var(--success); margin:8px 0 0;">Your £10 deposit will be refunded within 2 days. We'll process it automatically, and you should see it back in your account shortly after.</p>
+       </div>
+       <p style="font-size:0.9rem; color:var(--muted); margin:12px 0;">If you'd like to rebook in the future, we'd love to see you and your dog again!</p>
+       <button class="btn-back" onclick="goHome()" style="width:100%; margin-top:20px;">← Back to DogRun</button>`;
+  } else {
+    content.innerHTML = `<h1>❌ Booking Cancelled</h1>
+       <p style="font-size:0.9rem; color:var(--muted); margin:16px 0;">Your booking <strong>${booking.ref}</strong> has been cancelled.</p>
+       <div style="background:#fdecea; border-radius:10px; padding:14px; margin:16px 0; border-left:4px solid var(--red);">
+         <p style="font-size:0.9rem; color:var(--red); margin:0;"><strong>⚠️ Non-Refundable Deposit</strong></p>
+         <p style="font-size:0.85rem; color:var(--red); margin:8px 0 0;">Per the Terms & Conditions, your £10 deposit is <strong>non-refundable</strong> because the cancellation was made less than 24 hours before your session.</p>
+       </div>
+       <p style="font-size:0.9rem; color:var(--muted); margin:12px 0;">If you have questions or concerns, please reply to the cancellation confirmation email or contact us at thedo6run@gmail.com.</p>
+       <button class="btn-back" onclick="goHome()" style="width:100%; margin-top:20px;">← Back to DogRun</button>`;
+  }
+}
+
+async function handleReschedule() {
+  if (!selectedNewTime) {
+    showMessage('error', 'Please select a new time slot.');
+    return;
+  }
+  const newDate = document.getElementById('newDate').value;
+  const btn = document.getElementById('rescheduleBtn');
+  btn.disabled = true;
+  btn.textContent = 'Rescheduling...';
+  try {
+    const res = await fetch(APPS_SCRIPT_URL + '?type=reschedule&token=' + encodeURIComponent(booking.token) + '&newDate=' + newDate + '&newTime=' + encodeURIComponent(selectedNewTime) + '&v=' + Date.now());
+    const result = await res.json();
+    if (result.success) {
+      const dateObj = new Date(newDate + 'T00:00:00Z');
+      const niceDate = dateObj.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+      showRescheduleSuccess(niceDate);
+    } else if (result.error === 'max reschedules reached') {
+      showMessage('error', 'You\'ve used all available reschedules. Please contact us to make further changes.');
+    } else {
+      showMessage('error', result.error || 'Could not reschedule. Please try again.');
+    }
+    btn.disabled = false;
+    btn.textContent = 'Confirm Reschedule';
+  } catch(e) {
+    showMessage('error', 'An error occurred. Please try again.');
+    btn.disabled = false;
+    btn.textContent = 'Confirm Reschedule';
+  }
+}
+
+function showRescheduleSuccess(niceDate) {
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('successState').style.display = 'block';
+  const content = document.getElementById('successContent');
+  content.innerHTML = `<h1>✅ Rescheduled!</h1>
+     <p style="font-size:0.9rem; color:var(--muted); margin:16px 0;">Your booking <strong>${booking.ref}</strong> has been successfully rescheduled.</p>
+     <div style="background:var(--cream); border-radius:10px; padding:14px; margin:16px 0;">
+       <p style="font-size:0.85rem; text-transform:uppercase; color:var(--muted); margin:0 0 8px; font-weight:500;">📅 Your New Appointment</p>
+       <p style="font-size:0.95rem; color:var(--navy); margin:0; font-weight:500;">${niceDate} at ${selectedNewTime}</p>
+     </div>
+     <p style="font-size:0.9rem; color:var(--muted); margin:12px 0;">We've sent you a confirmation email with all the details. See you then!</p>
+     <button class="btn-back" onclick="goHome()" style="width:100%; margin-top:20px;">← Back to DogRun</button>`;
+}
+
+function hideReschedule() {
+  selectedNewTime = null;
+  document.querySelectorAll('#newTimeGrid .time-slot').forEach(s => s.classList.remove('selected'));
+  document.getElementById('newDate').value = new Date().toISOString().split('T')[0];
+}
+
+function showMessage(type, text) {
+  const msg = document.getElementById('messageBox');
+  msg.className = 'message visible ' + type;
+  msg.textContent = text;
+}
+
+function showError() {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('errorState').style.display = 'block';
+}
+
+function goHome() {
+  window.location.href = '/';
+}
+</script>
+
+</body>
+</html>
