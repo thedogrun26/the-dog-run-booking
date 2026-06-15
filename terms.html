@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Terms & Conditions — DogRun</title>
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#3766a0" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;1,800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy: #3766a0;
+      --navy-dark: #2a5488;
+      --red: #c60100;
+      --cream: #f4f6f8;
+      --warm: #dde3ea;
+      --text: #1a1a1a;
+      --muted: #6b7a8d;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Barlow', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+
+    header {
+      background: linear-gradient(160deg, #2a5488 0%, #3766a0 100%);
+      padding: 16px 20px;
+      border-bottom: 4px solid var(--red);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-style: italic;
+      font-weight: 800;
+      color: white;
+      font-size: 1.5rem;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+    }
+    .menu-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.6rem;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    /* SLIDE OUT MENU */
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .menu-overlay.open { opacity: 1; pointer-events: auto; }
+    .menu-drawer {
+      position: fixed;
+      top: 0; right: -280px;
+      width: 280px;
+      height: 100vh;
+      background: #142a3e;
+      z-index: 201;
+      transition: right 0.3s;
+      padding: 24px 0;
+    }
+    .menu-drawer.open { right: 0; }
+    .menu-close {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      font-size: 1.4rem;
+      cursor: pointer;
+      position: absolute;
+      top: 16px; right: 16px;
+    }
+    .menu-items {
+      margin-top: 40px;
+      list-style: none;
+    }
+    .menu-items a {
+      display: block;
+      padding: 16px 28px;
+      color: white;
+      text-decoration: none;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-style: italic;
+      font-weight: 700;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-left: 4px solid transparent;
+      transition: all 0.2s;
+    }
+    .menu-items a:hover, .menu-items a.active {
+      border-left-color: var(--red);
+      background: rgba(255,255,255,0.05);
+    }
+
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+    .policy-card {
+      background: white;
+      border-radius: 14px;
+      padding: 32px 28px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      border-top: 4px solid var(--navy);
+    }
+    h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-style: italic;
+      color: var(--navy);
+      font-size: 1.8rem;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .updated { color: var(--muted); font-size: 0.82rem; margin-bottom: 24px; }
+    h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      color: var(--navy);
+      font-size: 1.25rem;
+      margin: 28px 0 10px;
+      text-transform: uppercase;
+    }
+    p, li { font-size: 0.92rem; line-height: 1.7; margin-bottom: 10px; color: #333; }
+    ul { padding-left: 22px; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.85rem; }
+    th, td { border: 1px solid var(--warm); padding: 8px 10px; text-align: left; }
+    th { background: var(--cream); font-weight: 600; }
+    footer {
+      background: #142a3e;
+      text-align: center;
+      padding: 20px;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="header-title">DogRun™</a>
+  <button class="menu-btn" onclick="toggleMenu()">☰</button>
+</header>
+
+<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+<nav class="menu-drawer" id="menuDrawer">
+  <button class="menu-close" onclick="toggleMenu()">✕</button>
+  <ul class="menu-items">
+    <li><a href="/">🐾 Book a Session</a></li>
+    <li><a href="/leaderboard.html">🏆 Leaderboard</a></li>
+    <li><a href="/gallery.html">🖼️ Gallery</a></li>
+    <li><a href="/terms.html" class="active">📄 Terms &amp; Conditions</a></li>
+    <li><a href="/privacy.html" >🔒 Privacy Policy</a></li>
+  </ul>
+</nav>
+
+<main>
+  <div class="policy-card">
+    <h1>Terms &amp; Conditions</h1>
+    <p class="updated">Last updated: 14/06/2026</p>
+    <p>These Terms &amp; Conditions ("Terms") govern your use of the DogRun booking service at dogrun.uk and your participation in DogRun sessions. By making a booking, you agree to these Terms.</p>
+    <p><strong>DogRun</strong> ("we", "us", "our") is a mobile dog gym service operating in West Sussex.<br/>Contact: thedo6run@gmail.com</p>
+
+    <h2>1. The Service</h2>
+    <p>1.1. DogRun provides mobile dog exercise sessions ("Sessions") at or near the customer's location, within our service area.</p>
+    <p>1.2. New customers must book a Taster Session as their first booking. The Taster Session acts as an induction and assessment of your dog's suitability for the service.</p>
+    <p>1.3. We reserve the right to refuse or discontinue service to any customer or dog at our reasonable discretion, including but not limited to undisclosed behavioural issues, safety concerns, or abusive conduct toward staff.</p>
+
+    <h2>2. Bookings</h2>
+    <p>2.1. Bookings are made through our website at dogrun.uk.</p>
+    <p>2.2. When you submit a booking, your slot is held for you. Your booking is confirmed once we have received your £10 deposit. You will receive an acknowledgement email when you book; this confirms we have received your request, not that payment has been taken.</p>
+    <p>2.3. You must provide accurate and complete information when booking, including your dog's health and behavioural details. Failure to disclose relevant information may result in cancellation without refund.</p>
+    <p>2.4. Each booking is assigned to a specific date and time slot. Please be available at the agreed location at the booked time.</p>
+
+    <h2>3. Payments &amp; Deposits</h2>
+    <p>3.1. A deposit of £10 is payable at the time of booking to secure your slot. The deposit is non-refundable where you cancel less than 24 hours before your Session, or fail to attend (see section 4). Where you cancel more than 24 hours before, the deposit is refundable or transferable in line with section 4.</p>
+    <p>3.2. The remaining balance is payable on completion of the Session, by card or other accepted payment methods.</p>
+    <p>3.3. Prices are as displayed on the booking page at the time of booking. We reserve the right to change prices for future bookings.</p>
+
+    <h2>4. Cancellations &amp; Refunds</h2>
+    <p>4.1. <strong>Cancellation by you — more than 24 hours before the Session:</strong> your deposit will be refunded or transferred to a rescheduled booking, at your choice.</p>
+    <p>4.2. <strong>Cancellation by you — less than 24 hours before the Session:</strong> your deposit is non-refundable.</p>
+    <p>4.3. <strong>No-show:</strong> if you are not available at the booked time and location, the Session is forfeited and the deposit is non-refundable.</p>
+    <p>4.4. <strong>Cancellation by us:</strong> if we must cancel (e.g. vehicle breakdown, staff illness, dangerous weather), you will be offered a full refund of any deposit paid or a rescheduled Session.</p>
+    <p>4.5. <strong>Early termination:</strong> if a Session is terminated early due to undisclosed behavioural issues or safety concerns (see section 5), no refund will be given.</p>
+    <p>4.6. <strong>Rescheduling limits:</strong> your booking can be rescheduled up to 3 times at no additional cost. After you have used all 3 reschedules, your booking becomes confirmed and your deposit becomes non-refundable, similar to cancellations made within 24 hours of the Session. This helps us protect your dog's slot and maintain reliable scheduling.</p>
+
+    <h2>5. Your Dog — Health &amp; Behaviour</h2>
+    <p>5.1. You confirm that your dog is in good general health and fit to participate in physical exercise. If in doubt, consult your vet before booking.</p>
+    <p>5.2. You must disclose any known medical conditions, injuries, reactivity, aggression, or behavioural concerns at the time of booking or before the Session begins.</p>
+    <p>5.3. We reserve the right to stop any Session at any time if a dog displays behaviour that poses a risk to itself, our staff, equipment, or others.</p>
+    <p>5.4. Your dog must be up to date with vaccinations, flea and worm treatment as recommended by your vet.</p>
+
+    <h2>6. Liability</h2>
+    <p>6.1. Participation is at your own risk, as set out in the Participation Waiver which you accept at the time of your first booking.</p>
+    <p>6.2. Nothing in these Terms excludes or limits our liability for death or personal injury caused by our negligence, or for fraud, or any other liability that cannot be excluded by law.</p>
+    <p>6.3. Subject to clause 6.2, our total liability arising from any booking shall not exceed the total amount paid for that booking.</p>
+    <p>6.4. We are not liable for indirect or consequential losses.</p>
+
+    <h2>7. Emergency Veterinary Treatment</h2>
+    <p>7.1. In an emergency where you cannot be contacted, you authorise us to seek veterinary treatment for your dog. You are responsible for any veterinary costs incurred.</p>
+
+    <h2>8. Photography &amp; Media</h2>
+    <p>8.1. Photography and video consent is requested separately at the time of your first booking and may be withdrawn at any time by contacting us.</p>
+
+    <h2>9. Your Data</h2>
+    <p>9.1. We process your personal data in accordance with our <a href="/privacy.html">Privacy Policy</a>.</p>
+
+    <h2>10. General</h2>
+    <p>10.1. We may update these Terms from time to time. The version in force at the time of your booking applies to that booking.</p>
+    <p>10.2. These Terms are governed by the laws of England and Wales, and disputes are subject to the exclusive jurisdiction of the courts of England and Wales.</p>
+    <p>10.3. If any provision of these Terms is found to be unenforceable, the remaining provisions remain in full effect.</p>
+  </div>
+</main>
+
+<footer>DogRun™ · A Mobile Gym For Dogs · West Sussex</footer>
+
+<script>
+function toggleMenu() {
+  document.getElementById('menuOverlay').classList.toggle('open');
+  document.getElementById('menuDrawer').classList.toggle('open');
+}
+</script>
+</body>
+</html>
